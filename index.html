@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<style type="text/css">
+    #body {
+        width: 400px;
+        margin: 0px auto;
+    }
+
+    .inner{
+        border-top: 5px solid #337ab7;
+        -moz-animation: reveal-banner 1s 0.25s ease-in-out;
+        -webkit-animation: reveal-banner 1s 0.25s ease-in-out;
+        -o-animation: reveal-banner 1s 0.25s ease-in-out;
+        -ms-animation: reveal-banner 1s 0.25s ease-in-out;
+        animation: reveal-banner 1s 0.25s ease-in-out;
+        -moz-animation-fill-mode: forwards;
+        -webkit-animation-fill-mode: forwards;
+        -o-animation-fill-mode: forwards;
+        -ms-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+        background: slategray;
+        color: white;
+        /*display: inline-block;*/
+        box-shadow: 0 6px 4px 0 rgba(140, 139, 139, 0.3);
+        padding: 20px 40px;
+
+    }
+    .inner div {
+        text-align: center;
+        height: 20px;
+        background-color: white;
+        padding: 10px;
+    }
+    .inner ul {list-style: none;padding: 0px;}
+    .inner ul li     {
+
+        color: #337ab7 ;
+        font-weight:500;
+        font-family: 'Poppins', sans-serif;
+        padding:5px;
+        z-index:999;
+        font-size: 16px;
+    }
+    .inner span     {
+        color: white ;
+    }
+    .error{color: red;}
+
+
+
+</style>
+
+<script type="text/javascript">
+    var requestURL = 'ajaxRequestType.php';
+
+    function registerEvents() {
+        document.getElementById("sendButton").addEventListener("click", sendAjaxRequest);
+    }
+
+    function sendAjaxRequest() {
+        var inputTypeObj = document.getElementById("inputType");
+        var errorObj     = document.getElementById("error");
+        var responseObj  = document.getElementById("ajaxResponse");
+        var inputMethod  = inputTypeObj.options[inputTypeObj.selectedIndex].value;
+        var inputValue   = document.getElementById('inputValue').value;
+
+
+        if(inputMethod == '') {
+            errorObj.innerHTML = '<label class="error">Please select Input type</label>';
+            return false;
+        }
+
+
+        var params = "inputValue="+encodeURI(inputValue);
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+               if (xmlhttp.status == 200) {
+                   responseObj.innerHTML = xmlhttp.responseText;
+               } else if(xmlhttp.status == 400) {
+                   errorObj.innerHTML = 'There was an error 400';
+               } else{
+                   errorObj.innerHTML = 'something else other than 200 was returned';
+               }
+            }
+        };
+
+        xmlhttp.open(inputMethod, requestURL, true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send(params);
+    }
+</script>
+</head>
+<body onload="registerEvents()">
+
+    <div id="body" class="inner">
+
+        <ul>
+        <li><span>Request type :</span>  <select id="inputType">
+            <option value="">Request type</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+        </select></li>
+
+        <li><span>Input Value :</span>  <textarea id="inputValue" style="margin-left: 13px;"></textarea></li>
+
+        <li><input type="button" value="Send" id="sendButton" style="margin-left: 27%;"></li>
+
+        <li><div id="error" class="error"></div></li>
+        <li><div id="ajaxResponse"></div></li>
+
+        </ul>
+
+    </div>
+
+</body>
+</html>
